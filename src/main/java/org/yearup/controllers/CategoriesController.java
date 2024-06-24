@@ -1,8 +1,7 @@
 package org.yearup.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import org.yearup.data.CategoryDao;
 import org.yearup.data.ProductDao;
 import org.yearup.models.Category;
@@ -11,9 +10,12 @@ import org.yearup.models.Product;
 import java.util.List;
 
 // add the annotations to make this a REST controller
+@RestController
 // add the annotation to make this controller the endpoint for the following url
+@RequestMapping ("categories")
     // http://localhost:8080/categories
 // add annotation to allow cross site origin requests
+@CrossOrigin
 public class CategoriesController
 {
     private CategoryDao categoryDao;
@@ -21,8 +23,15 @@ public class CategoriesController
 
 
     // create an Autowired controller to inject the categoryDao and ProductDao
+    @Autowired  CategoriesController(ProductDao productDao, CategoryDao categoryDoa)
+    {
+        this.productDao = productDao;
+        this.categoryDao = categoryDoa;
+    }
+
 
     // add the appropriate annotation for a get action
+    
     public List<Category> getAll()
     {
         // find and return all categories
