@@ -5,8 +5,8 @@ import org.yearup.data.CategoryDao;
 import org.yearup.models.Category;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -21,14 +21,55 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
     public List<Category> getAllCategories()
     {
         // get all categories
-        return null;
+        List<Category> categories = new ArrayList<>();
+
+        String sql = "SELECT * FROM categories";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery())
+        {
+            while (resultSet.next())
+            {
+                Category category = mapRow(resultSet);
+                categories.add(category);
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();  // Handle the exception appropriately in your application
+        }
+
+        return categories;
     }
 
     @Override
     public Category getById(int categoryId)
     {
         // get category by id
-        return null;
+        Category category = null;
+
+        String sql = "SELECT * FROM categories WHERE category_id = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql))
+        {
+            statement.setInt(1, categoryId);
+
+            try (ResultSet resultSet = statement.executeQuery())
+            {
+                if (resultSet.next())
+                {
+                    category = mapRow(resultSet);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();  // Handle the exception appropriately in your application
+        }
+
+        return category;
     }
 
     @Override
