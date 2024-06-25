@@ -12,15 +12,14 @@ import java.util.List;
 @Component
 public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     private final DataSource dataSource;
-    public MySqlCategoryDao(DataSource dataSource, DataSource dataSource1)
-    {
+
+    public MySqlCategoryDao(DataSource dataSource, DataSource dataSource1) {
         super(dataSource);
         this.dataSource = dataSource1;
     }
 
     @Override
-    public List<Category> getAllCategories()
-    {
+    public List<Category> getAllCategories() {
         // get all categories
         List<Category> categories = new ArrayList<>();
 
@@ -28,16 +27,12 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery())
-        {
-            while (resultSet.next())
-            {
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
                 Category category = mapRow(resultSet);
                 categories.add(category);
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();  // Handle the exception appropriately in your application
         }
 
@@ -45,28 +40,22 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     }
 
     @Override
-    public Category getById(int categoryId)
-    {
+    public Category getById(int categoryId) {
         // get category by id
         Category category = null;
 
         String sql = "SELECT * FROM categories WHERE category_id = ?";
 
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql))
-        {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, categoryId);
 
-            try (ResultSet resultSet = statement.executeQuery())
-            {
-                if (resultSet.next())
-                {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
                     category = mapRow(resultSet);
                 }
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();  // Handle the exception appropriately in your application
         }
 
@@ -74,15 +63,13 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     }
 
     @Override
-    public Category create(Category category)
-    {
+    public Category create(Category category) {
         // create a new category
         String sql = "INSERT INTO categories (name, description) VALUES (?, ?)";
 
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
-        {
+             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, category.getName());
             statement.setString(2, category.getDescription());
 
@@ -90,19 +77,14 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
             int affectedRows = statement.executeUpdate();
 
 
-            if (affectedRows > 0)
-            {
-                try (ResultSet generatedKeys = statement.getGeneratedKeys())
-                {
-                    if (generatedKeys.next())
-                    {
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
                         category.setCategoryId(generatedKeys.getInt(1));
                     }
                 }
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();  // Handle the exception appropriately in your application
         }
 
@@ -111,24 +93,20 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     }
 
     @Override
-    public void update(int categoryId, Category category)
-    {
+    public void update(int categoryId, Category category) {
         // update category
         String sql = "UPDATE categories SET name = ?, description = ? WHERE category_id = ?";
 
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql))
-        {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, category.getName());
             statement.setString(2, category.getDescription());
             statement.setInt(3, categoryId);
 
 
             statement.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();  // Handle the exception appropriately in your application
         }
         // update category
@@ -136,31 +114,38 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
     }
 
     @Override
-    public void delete(int categoryId)
-    {
+    public void delete(int categoryId) {
         // delete category
         String sql = "DELETE FROM categories WHERE category_id = ?";
 
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql))
-        {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, categoryId);
 
 
             statement.executeUpdate();
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();  // Handle the exception appropriately in your application
         }
 
     }
 
-    private Category mapRow(ResultSet row) throws SQLException
-    {
-        
-        return null;
+    private Category mapRow(ResultSet row) throws SQLException {
+        int categoryId = row.getInt("category_id");
+        String name = row.getString("name");
+        String description = row.getString("description");
+
+
+        Category category = new Category() {{
+            setCategoryId(categoryId);
+            setName(name);
+            setDescription(description);
+        }};
+
+
+        return category;
+
     }
 
 }
