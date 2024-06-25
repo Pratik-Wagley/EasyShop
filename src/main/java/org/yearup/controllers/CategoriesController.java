@@ -1,6 +1,7 @@
 package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.data.CategoryDao;
 import org.yearup.data.ProductDao;
@@ -40,16 +41,16 @@ public class CategoriesController
 
 
     // add the appropriate annotation for a get action
-    @RequestMapping(path = "/{id}")
+
     public Category getById(@PathVariable int id)
     {
         // get the category by id
-        return categoryDao.getById(id);
+        return null;
     }
 
     // the url to return all products in category 1 would look like this
     // https://localhost:8080/categories/1/products
-    @GetMapping("{categoryId}/products")
+
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
         // get a list of product by categoryId
@@ -62,6 +63,7 @@ public class CategoriesController
     {
         // insert the category
         return null;
+
     }
 
     // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
@@ -76,6 +78,7 @@ public class CategoriesController
     // add annotation to ensure that only an ADMIN can call this function
     public void deleteCategory(@PathVariable int id)
     {
+        categoryDao.delete(id);
         // delete the category by id
     }
 }

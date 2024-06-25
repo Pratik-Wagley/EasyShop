@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
-{
-    public MySqlCategoryDao(DataSource dataSource)
+public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao {
+    private final DataSource dataSource;
+    public MySqlCategoryDao(DataSource dataSource, DataSource dataSource1)
     {
         super(dataSource);
+        this.dataSource = dataSource1;
     }
 
     @Override
@@ -25,7 +26,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
 
         String sql = "SELECT * FROM categories";
 
-        try (Connection connection = getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery())
         {
@@ -77,11 +78,13 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
     {
         // create a new category
         return null;
+
     }
 
     @Override
     public void update(int categoryId, Category category)
     {
+
         // update category
     }
 
@@ -93,18 +96,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
 
     private Category mapRow(ResultSet row) throws SQLException
     {
-        int categoryId = row.getInt("category_id");
-        String name = row.getString("name");
-        String description = row.getString("description");
-
-        Category category = new Category()
-        {{
-            setCategoryId(categoryId);
-            setName(name);
-            setDescription(description);
-        }};
-
-        return category;
+        return null;
     }
 
 }
