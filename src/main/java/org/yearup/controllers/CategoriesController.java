@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.yearup.data.CategoryDao;
 import org.yearup.data.ProductDao;
 import org.yearup.models.Category;
@@ -44,10 +45,12 @@ public class CategoriesController
     // add the appropriate annotation for a get action
 
     @GetMapping(path = "/{id}")
-    public Category getById(@PathVariable int id)
-    {
-        // get the category by id
-        return categoryDao.getById(id);
+    public Category getById(@PathVariable int id) {
+        Category category = categoryDao.getById(id);
+        if (category == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found with id: " + id);
+        }
+        return category;
     }
 
 
