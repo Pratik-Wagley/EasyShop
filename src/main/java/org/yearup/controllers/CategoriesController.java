@@ -1,6 +1,7 @@
 package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.data.CategoryDao;
@@ -42,7 +43,7 @@ public class CategoriesController
 
     // add the appropriate annotation for a get action
 
-    @RequestMapping(path = "/{id}")
+    @GetMapping(path = "/{id}")
     public Category getById(@PathVariable int id)
     {
         // get the category by id
@@ -63,6 +64,7 @@ public class CategoriesController
 
     // add annotation to call this method for a POST action
     @RequestMapping(method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.CREATED)
     // add annotation to ensure that only an ADMIN can call this function
     @Secured("ROLE_ADMIN")
     public Category addCategory(@RequestBody Category category)
@@ -88,6 +90,7 @@ public class CategoriesController
     // add annotation to call this method for a DELETE action - the url path must include the categoryId
     @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
     // add annotation to ensure that only an ADMIN can call this function
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Secured("ROLE_ADMIN")
     public void deleteCategory(@PathVariable int id)
     {
@@ -95,14 +98,4 @@ public class CategoriesController
         // delete the category by id
     }
 
-    }
-
-
-    // add annotation to call this method for a DELETE action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
-    public void deleteCategory(@PathVariable int id)
-    {
-        categoryDao.delete(id);
-        // delete the category by id
-    }
 }
