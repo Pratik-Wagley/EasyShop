@@ -36,8 +36,7 @@ public class CategoriesController
 
     // add the appropriate annotation for a get action
     @RequestMapping(method = RequestMethod.GET)
-    public List<Category> getAll() {
-        // find and return all categories
+    public List<Category> getAll() {        // find and return all categories
         return categoryDao.getAllCategories();
     }
 
